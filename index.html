@@ -3,9 +3,452 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>hi</title>
+    <title>Are You Ducktrans?</title>
+    <style>
+        :root {
+            --primary: #ffb703;
+            --primary-hover: #fb8500;
+            --secondary: #8ecae6;
+            --bg: #219ebc;
+            --text: #023047;
+            --white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Fredoka One', sans-serif;
+        }
+
+        body {
+            background-color: var(--secondary);
+            background-image: radial-gradient(var(--bg) 20%, transparent 20%),
+                              radial-gradient(var(--bg) 20%, transparent 20%);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--white);
+            max-width: 600px;
+            width: 100%;
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 12px 0px var(--text);
+            border: 4px solid var(--text);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .duck-decoration {
+            font-size: 4rem;
+            margin-bottom: 10px;
+            display: inline-block;
+            animation: waddle 1.5s infinite ease-in-out;
+        }
+
+        @keyframes waddle {
+            0%, 100% { transform: rotate(-6deg); }
+            50% { transform: rotate(6deg) translateY(-5px); }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--text);
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 0px var(--primary);
+        }
+
+        p.subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            font-weight: bold;
+            color: #457b9d;
+        }
+
+        .card {
+            display: none;
+        }
+
+        .card.active {
+            display: block;
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: 3px solid var(--text);
+            border-radius: 15px;
+            background: #f8f9fa;
+            color: var(--text);
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        input:focus, select:focus {
+            background: #fff;
+            border-color: var(--primary-hover);
+            box-shadow: 0 0 10px rgba(255, 183, 3, 0.5);
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            background: #f8f9fa;
+            border: 3px solid var(--text);
+            padding: 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .radio-label:hover {
+            background: #fff9e6;
+            transform: translateY(-2px);
+        }
+
+        .radio-label input {
+            margin-right: 15px;
+            transform: scale(1.3);
+            accent-color: var(--primary);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: var(--text);
+            border: 3px solid var(--text);
+            padding: 15px 35px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 6px 0 var(--text);
+            transition: all 0.1s;
+            margin-top: 15px;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(2px);
+            box-shadow: 0 4px 0 var(--text);
+        }
+
+        .btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 0px 0 var(--text);
+        }
+
+        .progress-bar {
+            height: 12px;
+            width: 100%;
+            background: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 2px solid var(--text);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Result Styles */
+        .result-title {
+            font-size: 2.2rem;
+            color: var(--primary-hover);
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 0 var(--text);
+        }
+
+        .result-avatar {
+            font-size: 6rem;
+            margin: 20px 0;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: white;
+            margin: 5px;
+            border: 2px solid var(--text);
+        }
+
+        .analysis-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin: 20px 0;
+            text-align: left;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 20px;
+            border: 3px dashed var(--text);
+        }
+    </style>
 </head>
 <body>
-<p>hi, what if i just leave this like this lol that'd be funny</p>
+
+<div class="container">
+    <div class="duck-decoration">🦆</div>
+    <h1>Are You Ducktrans?</h1>
+    <p class="subtitle" id="sub-header">The ultimate scientific* vibe check</p>
+
+    <div class="progress-bar" id="progress-container">
+        <div class="progress-fill" id="progress"></div>
+    </div>
+
+    <form id="quiz-form" onsubmit="event.preventDefault();">
+        <!-- Welcome Screen -->
+        <div class="card active" id="card-0">
+            <p style="font-size: 1.3rem; margin-bottom: 30px; font-weight: bold;">
+                Have you ever looked at a mallard and thought, "Yeah, that's exactly my gender identity"? Let's find out your true avian destiny.
+            </p>
+            <button type="button" class="btn" onclick="nextCard(1)">Let's Quack! 🚀</button>
+        </div>
+
+        <!-- Question 1: Name -->
+        <div class="card" id="card-1">
+            <div class="form-group">
+                <label for="name">1. What is your chosen human name (or what should we call you)?</label>
+                <input type="text" id="name" placeholder="e.g., Alex, Bug, Destroyer of Worlds" required>
+            </div>
+            <button type="button" class="btn" onclick="validateAndNext(1, 2)">Next ✨</button>
+        </div>
+
+        <!-- Question 2: Color -->
+        <div class="card" id="card-2">
+            <div class="form-group">
+                <label for="color">2. Pick a color that matches your soul's current frequency:</label>
+                <select id="color" required>
+                    <option value="" disabled selected>-- Choose wisely --</option>
+                    <option value="Neon Pink">Neon Pink (Extravagant)</option>
+                    <option value="Glitchy Blue">Glitchy Blue (Vaporwave Vibes)</option>
+                    <option value="Breadcrust Gold">Breadcrust Gold (Delicious)</option>
+                    <option value="Screaming Void Green">Screaming Void Green (Spooky)</option>
+                    <option value="Trans-Amorist Purple">Trans-Amorist Purple (Magical)</option>
+                </select>
+            </div>
+            <button type="button" class="btn" onclick="validateAndNext(2, 3)">Next 🗺️</button>
+        </div>
+
+        <!-- Question 3: Age -->
+        <div class="card" id="card-3">
+            <div class="form-group">
+                <label for="age">3. How many solar orbits have you survived? (Age)</label>
+                <input type="number" id="age" min="1" max="999" placeholder="e.g., 23" required>
+            </div>
+            <button type="button" class="btn" onclick="validateAndNext(3, 4)">Next 🕒</button>
+        </div>
+
+        <!-- Question 4: Sexuality -->
+        <div class="card" id="card-4">
+            <div class="form-group">
+                <label>4. What is your current romantic/sexual orientation settings?</label>
+                <div class="radio-group">
+                    <label class="radio-label"><input type="radio" name="sexuality" value="100% Queer Space Magic" required> 100% Queer Space Magic</label>
+                    <label class="radio-label"><input type="radio" name="sexuality" value="Gravely Confused but Vibing"> Gravely Confused but Vibing</label>
+                    <label class="radio-label"><input type="radio" name="sexuality" value="Glow-in-the-dark Ace/Aro"> Glow-in-the-dark Ace/Aro</label>
+                    <label class="radio-label"><input type="radio" name="sexuality" value="Too Busy For This (Undecided)"> Too Busy For This (Undecided)</label>
+                </div>
+            </div>
+            <button type="button" class="btn" onclick="validateAndNext(4, 5)">Next 🌈</button>
+        </div>
+
+        <!-- Question 5: Funny Duck Question -->
+        <div class="card" id="card-5">
+            <div class="form-group">
+                <label>5. A massive sourdough loaf drops from the sky. What is your immediate tactical response?</label>
+                <div class="radio-group">
+                    <label class="radio-label"><input type="radio" name="duck_q" value="hoard" required> Form a defense perimeter and hiss at intruders.</label>
+                    <label class="radio-label"><input type="radio" name="duck_q" value="glitch"> Absorb it to power up my trans-dimensional abilities.</label>
+                    <label class="radio-label"><input type="radio" name="duck_q" value="share"> Organize a chaotic communist duck picnic.</label>
+                    <label class="radio-label"><input type="radio" name="duck_q" value="fashion"> Hollow it out and wear it as an avant-garde helmet.</label>
+                </div>
+            </div>
+            <button type="button" class="btn" onclick="generateResult()">Reveal My Destiny! 🔮</button>
+        </div>
+
+        <!-- Result Card -->
+        <div class="card" id="card-result">
+            <h2 class="result-title" id="result-headline">You are...</h2>
+            <div class="result-avatar" id="result-emoji">🦆</div>
+            
+            <div style="margin-bottom: 15px;">
+                <span class="badge" id="badge-name" style="background-color: var(--text);"></span>
+                <span class="badge" id="badge-color" style="background-color: #fb8500;"></span>
+                <span class="badge" id="badge-sexuality" style="background-color: #219ebc;"></span>
+            </div>
+
+            <div class="analysis-text" id="result-analysis"></div>
+            
+            <button type="button" class="btn" onclick="resetQuiz()">Quack Again! 🔄</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    const totalQuestions = 5;
+
+    function updateProgress(cardIndex) {
+        const progressFill = document.getElementById('progress');
+        if (cardIndex === 0) {
+            progressFill.style.width = '0%';
+        } else if (cardIndex === 'result') {
+            progressFill.style.width = '100%';
+        } else {
+            progressFill.style.width = `${((cardIndex - 1) / totalQuestions) * 100}%`;
+        }
+    }
+
+    function nextCard(index) {
+        document.querySelectorAll('.card').forEach(card => card.classList.remove('active'));
+        document.getElementById(`card-${index}`).classList.add('active');
+        updateProgress(index);
+    }
+
+    function validateAndNext(currentIndex, nextIndex) {
+        const currentCard = document.getElementById(`card-${currentIndex}`);
+        const inputs = currentCard.querySelectorAll('input[required], select[required]');
+        
+        let isValid = true;
+        inputs.forEach(input => {
+            if (input.type === 'radio') {
+                const radioGroup = currentCard.querySelectorAll(`input[name="${input.name}"]:checked`);
+                if (radioGroup.length === 0) isValid = false;
+            } else {
+                if (!input.value.trim()) isValid = false;
+            }
+        });
+
+        if (isValid) {
+            nextCard(nextIndex);
+        } else {
+            alert("Hold your horses! (Or ducks!) Please answer the question before moving on! 🛑");
+        }
+    }
+
+    function generateResult() {
+        // Validate question 5 first
+        const duckQChecked = document.querySelector('input[name="duck_q"]:checked');
+        if (!duckQChecked) {
+            alert("Don't leave the sourdough hanging! Answer question 5! 🍞");
+            return;
+        }
+
+        // Get values
+        const name = document.getElementById('name').value;
+        const color = document.getElementById('color').value;
+        const age = document.getElementById('age').value;
+        const sexuality = document.querySelector('input[name="sexuality"]:checked').value;
+        const duckChoice = duckQChecked.value;
+
+        // Hide headers/progress
+        document.getElementById('sub-header').style.display = 'none';
+        document.getElementById('progress-container').style.display = 'none';
+
+        // Set Badges
+        document.getElementById('badge-name').innerText = `Agent: ${name}`;
+        document.getElementById('badge-color').innerText = `Aura: ${color}`;
+        document.getElementById('badge-sexuality').innerText = sexuality;
+
+        // Determine Results
+        let headline = "";
+        let emoji = "";
+        let analysis = "";
+
+        const duckArchetypes = {
+            hoard: {
+                headline: "The Cyber-Mallard Overlord!",
+                emoji: "🤖🦆",
+                desc: `At ${age} years old, your defense mechanics are pristine. You aren't just transition-goals; you are an apex predator of the digital pond. Your choice of ${color} guarantees you blend perfectly into high-definition vaporwave backgrounds.`
+            },
+            glitch: {
+                headline: "A Trans-Dimensional Reality Glitch Duck!",
+                emoji: "✨🦆🔮",
+                desc: `Fascinating. Your ${age}-year-old mortal vessel cannot contain your power. By absorbing bread via cosmic algorithms, you have officially transcended regular duckhood. Your sexuality settings (${sexuality}) have successfully rewritten the pond's matrix.`
+            },
+            share: {
+                headline: "The Anarcho-Communist Bread-Sharer Duck!",
+                emoji: "🚩🦆🛠️",
+                desc: `An absolute icon of solidarity! You look at the pond and say: 'From each according to their webbed feet, to each according to their appetite.' ${name}, your ${color} energy is highly contagious. The ruling class of geese is shaking.`
+            },
+            fashion: {
+                headline: "The Haute-Couture Sourdough Fashionista Duck!",
+                emoji: "💅🦆👑",
+                desc: `Stunning! Brave! Utterly unhinged! Wearing bread as a helmet proves that your sense of style is lightyears ahead of humanity. At ${age} years old, your transition hasn't just succeeded; it has revolutionized the runway.`
+            }
+        };
+
+        const result = duckArchetypes[duckChoice];
+        
+        document.getElementById('result-headline').innerText = result.headline;
+        document.getElementById('result-emoji').innerText = result.emoji;
+        document.getElementById('result-analysis').innerHTML = `
+            <strong>Diagnostic Report:</strong><br><br>
+            Hello <strong>${name}</strong>, our calculations confirm that you are <strong>100% Ducktrans</strong>. <br><br>
+            ${result.desc}<br><br>
+            <em>Verdict: Go forth and quack, you magnificent legend. 🌈</em>
+        `;
+
+        // Show result card
+        document.querySelectorAll('.card').forEach(card => card.classList.remove('active'));
+        document.getElementById('card-result').classList.add('active');
+    }
+
+    function resetQuiz() {
+        document.getElementById('quiz-form').reset();
+        document.getElementById('sub-header').style.display = 'block';
+        document.getElementById('progress-container').style.display = 'block';
+        nextCard(0);
+    }
+</script>
+
 </body>
 </html>
